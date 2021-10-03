@@ -6,7 +6,7 @@ const app = express();
 const config_app = require('./config/app.js');
 const { databaseInitializer } = require('./libraries/database.js');
 
-const { auth_route, user_route } = require('./routes');
+const { auth_route, user_route, post_route } = require('./routes');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -16,6 +16,7 @@ databaseInitializer(config_app.app.database_uri);
 
 app.use('/api/v1/auth', auth_route);
 app.use('/api/v1/users', user_route);
+app.use('/api/v1/posts', post_route);
 
 /* listen for requests */
 app.listen(3000, ()=> {
