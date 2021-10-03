@@ -47,4 +47,5 @@ UserSchema.static('findUserByEmail', function (email) {
         });
     });
 });
+
 module.exports = mongoose.model("User", UserSchema);
