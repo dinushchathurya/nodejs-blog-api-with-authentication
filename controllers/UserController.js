@@ -26,6 +26,23 @@ const UserController = {
             })
         }
     },
+
+    /* delete user */
+    async delete_user(req, res) {
+        try {
+            await User.findByIdAndDelete(req.params.id)
+            res.status(200).json({
+                type: "success",
+                message: "User has been deleted successfully"
+            });
+        } catch (err) {
+            res.status(500).json({
+                type: "error",
+                message: "Something went wrong please try again",
+                err
+            })
+        } 
+    }
 };
 
 module.exports = UserController;
