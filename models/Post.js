@@ -21,7 +21,11 @@ const PostSchema = new mongoose.Schema({
         categories: {
             type: Array,
             required: false
-        }
+        },
+        user_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
     },
     {
         timestamps: true
