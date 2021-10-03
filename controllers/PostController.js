@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator');
+const mongoose = require('mongoose');
 
 const User = require('../models/User');
 const Post = require('../models/Post');
@@ -46,7 +47,7 @@ const PostController = {
         }
     },
 
-    /* create new product */
+    /* create new post */
     async create_post(req, res) {
 
         const errors = validationResult(req);
@@ -59,8 +60,10 @@ const PostController = {
         } else {
             try {
                 const { username, title, description } = req.body;
+                const id  = req.user.id;
                
                 const newPost = await new Post({
+                    user_id: mongoose.Types.ObjectId(id),
                     username: username,
                     title: title,
                     description: description
@@ -74,16 +77,23 @@ const PostController = {
                 });
                         
             } catch (err) {
-                res.status(500).json({
-                    type: "error",
-                    message: "Something went wrong please try again",
-                    err
-                })
+                if (err && err.code === 11000) {
+                    res.status(505).json({
+                        type: "error",
+                        message: "Title already exists",
+                    })
+                } else {
+                    res.status(500).json({
+                        type: "error",
+                        message: "Something went wrong please try again",
+                        err
+                    })
+                }  
             }
         }
     },
 
-    /* update product */
+    /* update post */
     async update_post(req, res) {
         const existing = await Post.findById(req.params.id);
         if (!existing) {
@@ -92,7 +102,7 @@ const PostController = {
                 message: "Post doesn't exists"
             })
         } else {
-            if(existing.username === req.body.username){
+            if (existing.user_id.toString() === req.user.id){
                 try {
                     const updatedPost = await Post.findByIdAndUpdate(req.params.id, {
                         $set: req.body
@@ -126,10 +136,10 @@ const PostController = {
         if (!existing) {
             res.status(200).json({
                 type: "error",
-                message: "Product doesn't exists"
+                message: "Post doesn't exists"
             })
         } else {
-            if (existing.username === req.body.username) {
+            if (existing.user_id.toString() === req.user.id) {
                 try {
                     await Post.findOneAndDelete(req.params.id);
                     res.status(200).json({
