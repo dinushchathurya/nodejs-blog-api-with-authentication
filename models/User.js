@@ -39,4 +39,12 @@ UserSchema.pre('save', function (next) {
     })
 });
 
+UserSchema.static('findUserByEmail', function (email) {
+    return new Promise((resolve, reject) => {
+        mongoose.model(User, UserSchema).findOne({ email: email }).exec(function (err, user) {
+            if (err) reject(err)
+            resolve(user);
+        });
+    });
+});
 module.exports = mongoose.model("User", UserSchema);
