@@ -5,6 +5,31 @@ const User = require('../models/User');
 
 const UserController = {
 
+    /* get single user */
+    async get_user(req, res) {
+        try {
+            const user = await User.findById(req.params.id);
+            if (!user) {
+                res.status(404).json({
+                    type: "error",
+                    message: "User doesn't exists"
+                })
+            } else {
+                const { password, ...data } = user._doc;
+                res.status(200).json({
+                    type: "success",
+                    data
+                })
+            }
+        } catch (err) {
+            res.status(500).json({
+                type: "error",
+                message: "Something went wrong please try again",
+                err
+            })
+        }
+    },
+
     /* update user */
     async update_user(req, res) {
         if (req.body.password) {
