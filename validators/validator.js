@@ -10,5 +10,12 @@ exports.createUser = [
         .withMessage('Email can not be empty!')
         .isEmail()
         .withMessage('Invalid email address!')
-        .normalizeEmail()
+        .normalizeEmail(),
+    check('email').custom(value => {
+        return User.findByEmail(value).then(user => {
+            if (user) {
+                return Promise.reject('E-mail already in use');
+            }
+        });
+    })
 ];
