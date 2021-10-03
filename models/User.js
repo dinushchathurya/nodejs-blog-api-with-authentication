@@ -40,7 +40,12 @@ UserSchema.pre('save', function (next) {
 });
 
 UserSchema.statics.findByEmail = function (email) {
-    return this.find({ email: email })
+    return new Promise((resolve, reject) => {
+        return this.findOne({ email: email }).exec(function (err, user) {
+            if (err) reject(err)
+            resolve(user);
+        });
+    });
 }
 
 
