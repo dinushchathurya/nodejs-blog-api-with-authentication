@@ -48,5 +48,14 @@ UserSchema.statics.findByEmail = function (email) {
     });
 }
 
+UserSchema.statics.findByUsername = function (username) {
+    return new Promise((resolve, reject) => {
+        return this.findOne({ username: username }).exec(function (err, user) {
+            if (err) reject(err)
+            resolve(user);
+        });
+    });
+}
+
 
 module.exports = mongoose.model("User", UserSchema);
